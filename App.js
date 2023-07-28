@@ -1,15 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+} from "react-native";
+import TaskItem from "./components/TaskItem";
+import TaskInput from "./components/TaskInput";
 
 export default function App() {
+  const [tasksList, setTasksList] = useState([]);
+
+  function addTaskHandler(enteredText) {
+    setTasksList((prevState) => {
+      return [...prevState, { text: enteredText, id: Math.random() * 100 }];
+    });
+  }
+
   return (
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput style={styles.textInput} placeholder='Your task' />
-        <Button title='Add Task' />
-      </View>
+      <TaskInput onAddTask={addTaskHandler} />
       <View style={styles.tasksContainer}>
-        <Text >List of goals...</Text>
+        <FlatList
+          data={tasksList}
+          renderItem={(itemData) => (
+            <TaskItem itemData={itemData} />
+          )}
+        />
       </View>
     </View>
   );
@@ -18,26 +35,9 @@ export default function App() {
 const styles = StyleSheet.create({
   appContainer: {
     flex: 1,
-    padding: 26
+    padding: 26,
   },
-  inputContainer: {
-    flex: 3,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingBottom: 20,
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc'
-  }, 
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    width: '70%',
-    marginRight: 8,
-    padding: 8
-  }, 
   tasksContainer: {
-    flex: 5
+    flex: 5,
   }
 });
